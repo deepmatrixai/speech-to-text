@@ -25,9 +25,17 @@ st.markdown(page_bg_img, unsafe_allow_html=True)
 # App title
 st.title("Text-to-Speech App")
 
+# Check if the API key is already stored in session_state
+if "openai_api_key" not in st.session_state:
+    st.session_state["openai_api_key"] = ""
+
 # Sidebar for API key input
-openai_api_key = st.sidebar.text_input("OpenAI API Key", type="password")
-os.environ["OPENAI_API_KEY"] = openai_api_key
+openai_api_key = st.sidebar.text_input("OpenAI API Key", type="password", value=st.session_state["openai_api_key"])
+
+# Update session_state with the entered API key
+if openai_api_key:
+    st.session_state["openai_api_key"] = openai_api_key
+    os.environ["OPENAI_API_KEY"] = openai_api_key
 
 # Main area for text input
 user_input = st.text_area("Enter your text here:", height=150)
@@ -37,7 +45,7 @@ default_text = " Please follow for more and hit a like button."
 
 # Button to generate speech
 if st.button("Generate Speech"):
-    if not openai_api_key:
+    if not st.session_state["openai_api_key"]:
         st.error("Please enter your OpenAI API key in the sidebar.")
     elif not user_input:
         st.error("Please enter some text to convert to speech.")
@@ -46,7 +54,7 @@ if st.button("Generate Speech"):
         final_input = user_input.strip() + default_text
         
         try:
-            client = OpenAI()
+            client = OpenAI(api_key=st.session_state["openai_api_key"])
             audio = client.audio.speech.create(
                 model="tts-1",
                 voice="echo",
@@ -76,7 +84,7 @@ if st.button("Generate Speech"):
 # Instructions
 st.markdown("""
 ### How to use:
-1. Make sure your OpenAI API key is saved in a `.env` file.
+1. Enter your OpenAI API key in the sidebar if it's your first time or you want to update it.
 2. Type or paste your text in the text area above.
 3. Click the 'Generate Speech' button to convert your text to speech.
 4. Listen to the generated audio using the player that appears.
