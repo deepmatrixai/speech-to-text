@@ -48,22 +48,33 @@ if st.button("Generate Speech"):
             )
             
             # Save audio to a file
-            audio.stream_to_file("output.mp3")
+            audio_path = "output.mp3"
+            audio.stream_to_file(audio_path)
             
             # Display audio player
-            st.audio("output.mp3")
+            st.audio(audio_path)
             
-            st.success("Speech generated successfully!")
+            # Provide download link for the generated speech
+            with open(audio_path, "rb") as file:
+                st.download_button(
+                    label="Download Speech",
+                    data=file,
+                    file_name="output.mp3",
+                    mime="audio/mpeg"
+                )
+            
+            st.success("Speech generated and ready for download!")
         except Exception as e:
             st.error(f"An error occurred: {str(e)}")
 
 # Instructions
 st.markdown("""
 ### How to use:
-1. Enter your OpenAI API key in the sidebar.
+1. Make sure your OpenAI API key is saved in a `.env` file.
 2. Type or paste your text in the text area above.
 3. Click the 'Generate Speech' button to convert your text to speech.
 4. Listen to the generated audio using the player that appears.
+5. Download the audio file using the 'Download Speech' button.
 """)
 
 # This is without the background image and by default openai api key is set to the .env file
