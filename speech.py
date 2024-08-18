@@ -32,6 +32,9 @@ os.environ["OPENAI_API_KEY"] = openai_api_key
 # Main area for text input
 user_input = st.text_area("Enter your text here:", height=150)
 
+# Text to append at the end of user input
+default_text = " Please follow for more and hit a like button."
+
 # Button to generate speech
 if st.button("Generate Speech"):
     if not openai_api_key:
@@ -39,12 +42,15 @@ if st.button("Generate Speech"):
     elif not user_input:
         st.error("Please enter some text to convert to speech.")
     else:
+        # Append the default text to the user input
+        final_input = user_input.strip() + default_text
+        
         try:
             client = OpenAI()
             audio = client.audio.speech.create(
                 model="tts-1",
                 voice="echo",
-                input=user_input
+                input=final_input
             )
             
             # Save audio to a file
