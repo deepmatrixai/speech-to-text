@@ -56,8 +56,8 @@ if st.button("Generate Speech"):
         try:
             client = OpenAI(api_key=st.session_state["openai_api_key"])
             audio = client.audio.speech.create(
-                # model="tts-1",
-                model ="tts-1-hd",
+                model="tts-1",
+                # model ="tts-1-hd",
                 voice="echo",
                 input=final_input
             )
