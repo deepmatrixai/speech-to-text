@@ -43,6 +43,10 @@ user_input = st.text_area("Enter your text here:", height=150)
 # Text to append at the end of user input
 default_text = " Please follow for more and hit a like button."
 
+# Voice selection dropdown
+voices = ["alloy", "echo", "fable", "onyx", "nova", "shimmer"]
+selected_voice = st.selectbox("Select a voice:", voices)
+
 # Button to generate speech
 if st.button("Generate Speech"):
     if not st.session_state["openai_api_key"]:
@@ -56,9 +60,8 @@ if st.button("Generate Speech"):
         try:
             client = OpenAI(api_key=st.session_state["openai_api_key"])
             audio = client.audio.speech.create(
-                # model="tts-1",
-                model ="tts-1-hd",
-                voice="echo",
+                model="tts-1-hd",
+                voice=selected_voice,
                 input=final_input
             )
             
@@ -82,15 +85,6 @@ if st.button("Generate Speech"):
         except Exception as e:
             st.error(f"An error occurred: {str(e)}")
 
-# Instructions
-st.markdown("""
-### How to use:
-1. Enter your OpenAI API key in the sidebar if it's your first time or you want to update it.
-2. Type or paste your text in the text area above.
-3. Click the 'Generate Speech' button to convert your text to speech.
-4. Listen to the generated audio using the player that appears.
-5. Download the audio file using the 'Download Speech' button.
-""")
 
 # This is without the background image and by default openai api key is set to the .env file
 # import streamlit as st
